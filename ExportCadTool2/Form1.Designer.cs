@@ -30,6 +30,7 @@
         {
             this.SelectFile_ListBox = new System.Windows.Forms.ListBox();
             this.FileSelect_GroupBox = new System.Windows.Forms.GroupBox();
+            this.FileSelectRest_Button = new System.Windows.Forms.Button();
             this.SelectFile_Button = new System.Windows.Forms.Button();
             this.DocumentExportExtension_GroupBox = new System.Windows.Forms.GroupBox();
             this.DXF_CheckBox = new System.Windows.Forms.CheckBox();
@@ -63,13 +64,16 @@
             this.Progress_Label = new System.Windows.Forms.Label();
             this.StartExoport_GroupBox = new System.Windows.Forms.GroupBox();
             this.SelectFile_OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.AllRest_Button = new System.Windows.Forms.Button();
+            this.Option_GroupBox = new System.Windows.Forms.GroupBox();
+            this.OptionRest_Button = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.FileSelect_GroupBox.SuspendLayout();
             this.DocumentExportExtension_GroupBox.SuspendLayout();
             this.ModelExportExtension_GroupBox.SuspendLayout();
             this.SelectExportFilePath_GroupBox.SuspendLayout();
             this.ExportOption_GroupBox.SuspendLayout();
             this.StartExoport_GroupBox.SuspendLayout();
+            this.Option_GroupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // SelectFile_ListBox
@@ -80,7 +84,7 @@
             this.SelectFile_ListBox.ItemHeight = 12;
             this.SelectFile_ListBox.Location = new System.Drawing.Point(6, 44);
             this.SelectFile_ListBox.Name = "SelectFile_ListBox";
-            this.SelectFile_ListBox.Size = new System.Drawing.Size(370, 484);
+            this.SelectFile_ListBox.Size = new System.Drawing.Size(370, 532);
             this.SelectFile_ListBox.TabIndex = 0;
             this.SelectFile_ListBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.SelectFile_ListBox_DragDrop);
             this.SelectFile_ListBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.SelectFile_ListBox_DragEnter);
@@ -88,15 +92,25 @@
             // 
             // FileSelect_GroupBox
             // 
-            this.FileSelect_GroupBox.Controls.Add(this.AllRest_Button);
+            this.FileSelect_GroupBox.Controls.Add(this.FileSelectRest_Button);
             this.FileSelect_GroupBox.Controls.Add(this.SelectFile_Button);
             this.FileSelect_GroupBox.Controls.Add(this.SelectFile_ListBox);
             this.FileSelect_GroupBox.Location = new System.Drawing.Point(12, 12);
             this.FileSelect_GroupBox.Name = "FileSelect_GroupBox";
-            this.FileSelect_GroupBox.Size = new System.Drawing.Size(387, 534);
+            this.FileSelect_GroupBox.Size = new System.Drawing.Size(387, 584);
             this.FileSelect_GroupBox.TabIndex = 1;
             this.FileSelect_GroupBox.TabStop = false;
             this.FileSelect_GroupBox.Text = "ファイル選択";
+            // 
+            // FileSelectRest_Button
+            // 
+            this.FileSelectRest_Button.Location = new System.Drawing.Point(247, 15);
+            this.FileSelectRest_Button.Name = "FileSelectRest_Button";
+            this.FileSelectRest_Button.Size = new System.Drawing.Size(75, 23);
+            this.FileSelectRest_Button.TabIndex = 2;
+            this.FileSelectRest_Button.Text = "選択リセット";
+            this.FileSelectRest_Button.UseVisualStyleBackColor = true;
+            this.FileSelectRest_Button.Click += new System.EventHandler(this.FileSelectRest_Button_Click);
             // 
             // SelectFile_Button
             // 
@@ -113,7 +127,7 @@
             this.DocumentExportExtension_GroupBox.Controls.Add(this.DXF_CheckBox);
             this.DocumentExportExtension_GroupBox.Controls.Add(this.PDF_CheckBox);
             this.DocumentExportExtension_GroupBox.Enabled = false;
-            this.DocumentExportExtension_GroupBox.Location = new System.Drawing.Point(406, 13);
+            this.DocumentExportExtension_GroupBox.Location = new System.Drawing.Point(9, 43);
             this.DocumentExportExtension_GroupBox.Name = "DocumentExportExtension_GroupBox";
             this.DocumentExportExtension_GroupBox.Size = new System.Drawing.Size(458, 41);
             this.DocumentExportExtension_GroupBox.TabIndex = 2;
@@ -150,7 +164,7 @@
             this.ModelExportExtension_GroupBox.Controls.Add(this.IGS_CheckBox);
             this.ModelExportExtension_GroupBox.Controls.Add(this.STEP_CheckBox);
             this.ModelExportExtension_GroupBox.Enabled = false;
-            this.ModelExportExtension_GroupBox.Location = new System.Drawing.Point(406, 60);
+            this.ModelExportExtension_GroupBox.Location = new System.Drawing.Point(9, 90);
             this.ModelExportExtension_GroupBox.Name = "ModelExportExtension_GroupBox";
             this.ModelExportExtension_GroupBox.Size = new System.Drawing.Size(458, 41);
             this.ModelExportExtension_GroupBox.TabIndex = 3;
@@ -161,7 +175,7 @@
             // 
             this.STL_CheckBox.AutoSize = true;
             this.STL_CheckBox.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.STL_CheckBox.Location = new System.Drawing.Point(103, 19);
+            this.STL_CheckBox.Location = new System.Drawing.Point(97, 18);
             this.STL_CheckBox.Name = "STL_CheckBox";
             this.STL_CheckBox.Size = new System.Drawing.Size(37, 16);
             this.STL_CheckBox.TabIndex = 0;
@@ -173,7 +187,7 @@
             // 
             this.IGS_CheckBox.AutoSize = true;
             this.IGS_CheckBox.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.IGS_CheckBox.Location = new System.Drawing.Point(58, 19);
+            this.IGS_CheckBox.Location = new System.Drawing.Point(52, 19);
             this.IGS_CheckBox.Name = "IGS_CheckBox";
             this.IGS_CheckBox.Size = new System.Drawing.Size(39, 16);
             this.IGS_CheckBox.TabIndex = 0;
@@ -200,7 +214,7 @@
             this.SelectExportFilePath_GroupBox.Controls.Add(this.MoveExportFile_CheckBox);
             this.SelectExportFilePath_GroupBox.Controls.Add(this.NoMoveExportFile_CheckBox);
             this.SelectExportFilePath_GroupBox.Enabled = false;
-            this.SelectExportFilePath_GroupBox.Location = new System.Drawing.Point(406, 107);
+            this.SelectExportFilePath_GroupBox.Location = new System.Drawing.Point(9, 137);
             this.SelectExportFilePath_GroupBox.Name = "SelectExportFilePath_GroupBox";
             this.SelectExportFilePath_GroupBox.Size = new System.Drawing.Size(458, 129);
             this.SelectExportFilePath_GroupBox.TabIndex = 3;
@@ -273,12 +287,12 @@
             this.ExportOption_GroupBox.Controls.Add(this.MakeZipFileByPartName_CheckBox);
             this.ExportOption_GroupBox.Controls.Add(this.SeparateFolderByExtension_CheckBox);
             this.ExportOption_GroupBox.Enabled = false;
-            this.ExportOption_GroupBox.Location = new System.Drawing.Point(406, 244);
+            this.ExportOption_GroupBox.Location = new System.Drawing.Point(9, 272);
             this.ExportOption_GroupBox.Name = "ExportOption_GroupBox";
-            this.ExportOption_GroupBox.Size = new System.Drawing.Size(459, 233);
+            this.ExportOption_GroupBox.Size = new System.Drawing.Size(458, 233);
             this.ExportOption_GroupBox.TabIndex = 3;
             this.ExportOption_GroupBox.TabStop = false;
-            this.ExportOption_GroupBox.Text = "出力オプション";
+            this.ExportOption_GroupBox.Text = "その他";
             // 
             // label2
             // 
@@ -471,9 +485,9 @@
             this.StartExoport_GroupBox.Controls.Add(this.Progress_Label);
             this.StartExoport_GroupBox.Controls.Add(this.Task_ProgressBar);
             this.StartExoport_GroupBox.Enabled = false;
-            this.StartExoport_GroupBox.Location = new System.Drawing.Point(406, 483);
+            this.StartExoport_GroupBox.Location = new System.Drawing.Point(9, 511);
             this.StartExoport_GroupBox.Name = "StartExoport_GroupBox";
-            this.StartExoport_GroupBox.Size = new System.Drawing.Size(459, 63);
+            this.StartExoport_GroupBox.Size = new System.Drawing.Size(458, 63);
             this.StartExoport_GroupBox.TabIndex = 6;
             this.StartExoport_GroupBox.TabStop = false;
             // 
@@ -482,27 +496,40 @@
             this.SelectFile_OpenFileDialog.FileName = "SelectFile_OpenFileDialg";
             this.SelectFile_OpenFileDialog.Multiselect = true;
             // 
-            // AllRest_Button
+            // Option_GroupBox
             // 
-            this.AllRest_Button.Location = new System.Drawing.Point(247, 15);
-            this.AllRest_Button.Name = "AllRest_Button";
-            this.AllRest_Button.Size = new System.Drawing.Size(75, 23);
-            this.AllRest_Button.TabIndex = 2;
-            this.AllRest_Button.Text = "選択リセット";
-            this.AllRest_Button.UseVisualStyleBackColor = true;
-            this.AllRest_Button.Click += new System.EventHandler(this.AllRest_Button_Click);
+            this.Option_GroupBox.Controls.Add(this.OptionRest_Button);
+            this.Option_GroupBox.Controls.Add(this.ExportOption_GroupBox);
+            this.Option_GroupBox.Controls.Add(this.DocumentExportExtension_GroupBox);
+            this.Option_GroupBox.Controls.Add(this.StartExoport_GroupBox);
+            this.Option_GroupBox.Controls.Add(this.ModelExportExtension_GroupBox);
+            this.Option_GroupBox.Controls.Add(this.SelectExportFilePath_GroupBox);
+            this.Option_GroupBox.Enabled = false;
+            this.Option_GroupBox.Location = new System.Drawing.Point(406, 13);
+            this.Option_GroupBox.Name = "Option_GroupBox";
+            this.Option_GroupBox.Size = new System.Drawing.Size(473, 583);
+            this.Option_GroupBox.TabIndex = 7;
+            this.Option_GroupBox.TabStop = false;
+            this.Option_GroupBox.Text = "出力オプション";
+            // 
+            // OptionRest_Button
+            // 
+            this.OptionRest_Button.Location = new System.Drawing.Point(366, 14);
+            this.OptionRest_Button.Name = "OptionRest_Button";
+            this.OptionRest_Button.Size = new System.Drawing.Size(101, 23);
+            this.OptionRest_Button.TabIndex = 1;
+            this.OptionRest_Button.Text = "オプションリセット";
+            this.OptionRest_Button.UseVisualStyleBackColor = true;
+            this.OptionRest_Button.Click += new System.EventHandler(this.OptionRest_Button_Click);
             // 
             // CadDataExportTool
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(874, 553);
-            this.Controls.Add(this.ExportOption_GroupBox);
-            this.Controls.Add(this.ModelExportExtension_GroupBox);
-            this.Controls.Add(this.DocumentExportExtension_GroupBox);
+            this.ClientSize = new System.Drawing.Size(884, 601);
             this.Controls.Add(this.FileSelect_GroupBox);
-            this.Controls.Add(this.StartExoport_GroupBox);
-            this.Controls.Add(this.SelectExportFilePath_GroupBox);
+            this.Controls.Add(this.Option_GroupBox);
+            this.MinimumSize = new System.Drawing.Size(900, 640);
             this.Name = "CadDataExportTool";
             this.Text = "CADデータ出力ツール";
             this.FileSelect_GroupBox.ResumeLayout(false);
@@ -516,6 +543,7 @@
             this.ExportOption_GroupBox.PerformLayout();
             this.StartExoport_GroupBox.ResumeLayout(false);
             this.StartExoport_GroupBox.PerformLayout();
+            this.Option_GroupBox.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -557,7 +585,10 @@
         private System.Windows.Forms.TextBox Prefix_TextBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button AllRest_Button;
+        private System.Windows.Forms.Button FileSelectRest_Button;
+        private System.Windows.Forms.GroupBox Option_GroupBox;
+        private System.Windows.Forms.Button OptionRest_Button;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 
