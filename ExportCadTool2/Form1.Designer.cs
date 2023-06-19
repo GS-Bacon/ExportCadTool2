@@ -45,7 +45,7 @@
             this.MoveExportFile_CheckBox = new System.Windows.Forms.CheckBox();
             this.NoMoveExportFile_CheckBox = new System.Windows.Forms.CheckBox();
             this.ExportOption_GroupBox = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.FileName_Label = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.Suffix_TextBox = new System.Windows.Forms.TextBox();
             this.Prefix_TextBox = new System.Windows.Forms.TextBox();
@@ -273,7 +273,7 @@
             // 
             // ExportOption_GroupBox
             // 
-            this.ExportOption_GroupBox.Controls.Add(this.label2);
+            this.ExportOption_GroupBox.Controls.Add(this.FileName_Label);
             this.ExportOption_GroupBox.Controls.Add(this.label1);
             this.ExportOption_GroupBox.Controls.Add(this.Suffix_TextBox);
             this.ExportOption_GroupBox.Controls.Add(this.Prefix_TextBox);
@@ -294,14 +294,14 @@
             this.ExportOption_GroupBox.TabStop = false;
             this.ExportOption_GroupBox.Text = "その他";
             // 
-            // label2
+            // FileName_Label
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(343, 183);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(68, 12);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "XXX.SDDRW";
+            this.FileName_Label.AutoSize = true;
+            this.FileName_Label.Location = new System.Drawing.Point(343, 183);
+            this.FileName_Label.Name = "FileName_Label";
+            this.FileName_Label.Size = new System.Drawing.Size(68, 12);
+            this.FileName_Label.TabIndex = 4;
+            this.FileName_Label.Text = "XXX.SDDRW";
             // 
             // label1
             // 
@@ -321,6 +321,7 @@
             this.Suffix_TextBox.Size = new System.Drawing.Size(117, 19);
             this.Suffix_TextBox.TabIndex = 3;
             this.Suffix_TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.Suffix_TextBox.TextChanged += new System.EventHandler(this.Suffix_TextBox_TextChanged);
             // 
             // Prefix_TextBox
             // 
@@ -330,6 +331,7 @@
             this.Prefix_TextBox.Name = "Prefix_TextBox";
             this.Prefix_TextBox.Size = new System.Drawing.Size(117, 19);
             this.Prefix_TextBox.TabIndex = 3;
+            this.Prefix_TextBox.TextChanged += new System.EventHandler(this.Prefix_TextBox_TextChanged);
             // 
             // SelectZipFolderPath_Button
             // 
@@ -583,7 +585,7 @@
         private System.Windows.Forms.CheckBox MakeZipSameExportFolderPath_CheckBox;
         private System.Windows.Forms.OpenFileDialog SelectFile_OpenFileDialog;
         private System.Windows.Forms.TextBox Prefix_TextBox;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label FileName_Label;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button FileSelectRest_Button;
         private System.Windows.Forms.GroupBox Option_GroupBox;

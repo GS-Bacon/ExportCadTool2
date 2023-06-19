@@ -970,5 +970,21 @@ namespace ExportCadTool2
         {
             OptionReset();
         }
+
+        private void Suffix_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            string DefaultExampleFileName = "XXX";
+            string DefaultExampleFileName2 = ".SDDRW";
+            FileName_Label.Text = Prefix_TextBox.Text + DefaultExampleFileName + Suffix_TextBox.Text+DefaultExampleFileName2;
+            FileName_Label.Update();
+        }
+
+        private void Prefix_TextBox_TextChanged(object sender, EventArgs e)
+        {
+            string DefaultExampleFileName = "XXX";
+            string DefaultExampleFileName2 = ".SDDRW";
+            FileName_Label.Text = Prefix_TextBox.Text+ DefaultExampleFileName + Suffix_TextBox.Text + DefaultExampleFileName2;
+            FileName_Label.Update();
+        }
     }
 }
