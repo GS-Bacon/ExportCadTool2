@@ -245,6 +245,7 @@
             this.ExportFolderPath_ListBox.Size = new System.Drawing.Size(387, 52);
             this.ExportFolderPath_ListBox.TabIndex = 1;
             this.ExportFolderPath_ListBox.EnabledChanged += new System.EventHandler(this.ExportFolderPath_ListBox_EnabledChanged);
+            this.ExportFolderPath_ListBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ExportFolderPath_ListBox_KeyDown);
             // 
             // MoveExportFile_CheckBox
             // 

@@ -57,7 +57,7 @@ namespace ExportCadTool2
 
         }
 
-        private void SelectFile_KeyDown(object sender, KeyEventArgs e)//選択したアイテムをdelete削除
+        private void SelectFile_KeyDown(object sender, KeyEventArgs e)//ファイル選択リストの選択したアイテムをdelete削除
         {
             // Deleteキーが押されたら項目を削除
             if (e.KeyData == Keys.Delete)
@@ -86,6 +86,35 @@ namespace ExportCadTool2
                 }
             }
             Toggle_GroupBox();
+        }
+        private void ExportFolderPath_ListBox_KeyDown(object sender, KeyEventArgs e)//出力フォルダリストの選択したものをDeleteで削除
+        {
+            // Deleteキーが押されたら項目を削除
+            if (e.KeyData == Keys.Delete)
+            {
+                if (this.ExportFolderPath_ListBox.SelectedItems.Count > 0)
+                {
+                    // 現在選択している行のインデックスを取得
+                    int index = this.ExportFolderPath_ListBox.SelectedIndex;
+
+                    if ((0 <= index) && (index < this.ExportFolderPath_ListBox.Items.Count))
+                    {
+                        // 項目を削除
+                        this.ExportFolderPath_ListBox.Items.RemoveAt(index);
+
+                        // 次の選択行を決定
+                        if (this.ExportFolderPath_ListBox.Items.Count > 0)
+                        {
+                            int nextIndex = index - 1;
+                            if (this.ExportFolderPath_ListBox.Items.Count > index)
+                            {
+                                nextIndex = index;
+                            }
+                            this.ExportFolderPath_ListBox.SelectedIndex = nextIndex;
+                        }
+                    }
+                }
+            }
         }
 
         private void MoveExportFile_CheckBox_CheckedChanged(object sender, EventArgs e) //MoveExportFlieとNoMoveExportFileをお互いにONOFFする
@@ -393,25 +422,11 @@ namespace ExportCadTool2
             }
         }
 
-        private void ExportCADFile(ListBox.ObjectCollection OriginalFilePath,string ExportFolderPath,string ZipFolderPath) //拡張子ごとにファイルを出力する ついでにZipファイルにも保存する
+        private void ExportCADFile(ListBox.ObjectCollection OriginalFilePath,string ExportFolderPath,string ZipFolderPath, string[] ExportPath) //拡張子ごとにファイルを出力する ついでにZipファイルにも保存する
         {
-            string[] ExportPath=new string[6];
             string ExportFilePath;
+            StringBuilder LabelText= new StringBuilder();
 
-            ExportPath[0]=ExportFolderPath;
-            //オプションで拡張子ごとのファイルに分ける場合は直下の拡張子ごとのフォルダに保存する
-            if(SeparateFolderByExtension_CheckBox.Checked==true)
-            {
-                if (PDF_CheckBox.Checked == true) ExportPath[1]=ExportFolderPath+ "\\" + "pdf";
-                if (DXF_CheckBox.Checked == true) ExportPath[2]=ExportFolderPath + "\\" + "dxf";
-                if (IGS_CheckBox.Checked == true) ExportPath[3] = ExportFolderPath + "\\" + "igs";
-                if (STEP_CheckBox.Checked == true) ExportPath[4] = ExportFolderPath + "\\" + "step";
-                if (STL_CheckBox.Checked == true) ExportPath[5] = ExportFolderPath + "\\" + "stl";
-            }
-            else
-            {
-                for(int i=0;i<ExportPath.Length;i++)ExportPath[i]=ExportFolderPath;
-            }
             for(int i=0; i < OriginalFilePath.Count; i++) 
             {
                 string OriginalFile = (string)OriginalFilePath[i];
@@ -423,9 +438,12 @@ namespace ExportCadTool2
                         if (PDF_CheckBox.Checked == true)
                         {
                             //エクスポートして保存
-                            Progress_Label.Text = "Export PDF : " + Path.GetFileName(OriginalFile);
+                            LabelText.Append("Export PDF : ");
+                            LabelText.Append(Path.GetFileName(OriginalFile));
+                            Progress_Label.Text =LabelText.ToString();
                             Task_ProgressBar.Value++;
                             Progress_Label.Update();
+
                             ExportFilePath = ExportPdf(OriginalFile, ExportPath[1]);
 
                             //Zipファイルオプションが選択されている場合はZipファイルに保存
@@ -436,15 +454,18 @@ namespace ExportCadTool2
                                 Progress_Label.Update();
                                 using (ZipArchive ZipCADFile = ZipFile.Open(ZipFolderPath + "\\" + Path.GetFileNameWithoutExtension(OriginalFile) + ".zip", ZipArchiveMode.Update))
                                 {
-                                    ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(OriginalFile), CompressionLevel.Optimal);
+                                    ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(ExportFilePath), CompressionLevel.Optimal);
                                 }
                             }
                         }
                         if (DXF_CheckBox.Checked == true)
                         {
-                            Progress_Label.Text = "Export DXF : " + Path.GetFileName(OriginalFile);
+                            LabelText.Append("Export DXF : ");
+                            LabelText.Append(Path.GetFileName(OriginalFile));
+                            Progress_Label.Text = LabelText.ToString();
                             Task_ProgressBar.Value++;
                             Progress_Label.Update();
+
                             ExportFilePath = ExportDxf(OriginalFile, ExportPath[2]);
 
                             //Zipファイルオプションが選択されている場合はZipファイルに保存
@@ -455,7 +476,7 @@ namespace ExportCadTool2
                                 Progress_Label.Update();
                                 using (ZipArchive ZipCADFile = ZipFile.Open(ZipFolderPath + "\\" + Path.GetFileNameWithoutExtension(OriginalFile) + ".zip", ZipArchiveMode.Update))
                                 {
-                                    ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(OriginalFile), CompressionLevel.Optimal);
+                                    ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(ExportFilePath), CompressionLevel.Optimal);
                                 }
                             }
                         }
@@ -463,9 +484,12 @@ namespace ExportCadTool2
                     case ".SLDPRT":
                         if (IGS_CheckBox.Checked == true)
                         {
-                            Progress_Label.Text = "Export IGS : " + Path.GetFileName(OriginalFile);
+                            LabelText.Append("Export IGS : ");
+                            LabelText.Append(Path.GetFileName(OriginalFile));
+                            Progress_Label.Text = LabelText.ToString();
                             Task_ProgressBar.Value++;
                             Progress_Label.Update();
+
                             ExportFilePath = ExportIges(OriginalFile, ExportPath[3]);
 
                             //Zipファイルオプションが選択されている場合はZipファイルに保存
@@ -476,13 +500,15 @@ namespace ExportCadTool2
                                 Progress_Label.Update();
                                 using (ZipArchive ZipCADFile = ZipFile.Open(ZipFolderPath + "\\" + Path.GetFileNameWithoutExtension(OriginalFile) + ".zip", ZipArchiveMode.Update))
                                 {
-                                    ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(OriginalFile), CompressionLevel.Optimal);
+                                    ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(ExportFilePath), CompressionLevel.Optimal);
                                 }
                             }
                         }
                         if (STEP_CheckBox.Checked == true)
                         {
-                            Progress_Label.Text = "Export STEP : " + Path.GetFileName(OriginalFile);
+                            LabelText.Append("Export STEP : ");
+                            LabelText.Append(Path.GetFileName(OriginalFile));
+                            Progress_Label.Text = LabelText.ToString();
                             Task_ProgressBar.Value++;
                             Progress_Label.Update();
                             ExportFilePath = ExportStep(OriginalFile, ExportPath[4]);
@@ -495,7 +521,7 @@ namespace ExportCadTool2
                                 Progress_Label.Update();
                                 using (ZipArchive ZipCADFile = ZipFile.Open(ZipFolderPath + "\\" + Path.GetFileNameWithoutExtension(OriginalFile) + ".zip", ZipArchiveMode.Update))
                                 {
-                                    ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(OriginalFile), CompressionLevel.Optimal);
+                                    ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(ExportFilePath), CompressionLevel.Optimal);
                                 }
                             }
                         }
@@ -514,7 +540,7 @@ namespace ExportCadTool2
                                 Progress_Label.Update();
                                 using (ZipArchive ZipCADFile = ZipFile.Open(ZipFolderPath + "\\" + Path.GetFileNameWithoutExtension(OriginalFile) + ".zip", ZipArchiveMode.Update))
                                 {
-                                    ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(OriginalFile), CompressionLevel.Optimal);
+                                    ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(ExportFilePath), CompressionLevel.Optimal);
                                 }
                             }
 
@@ -546,21 +572,6 @@ namespace ExportCadTool2
             {
                 Directory.CreateDirectory(ExportFilePath + "\\" + "stl");
             }
-        }
-
-        private HashSet<string> MakePartNameList() //重複しないパーツ名リストを返す 
-        {
-            var PartNameList= new HashSet<string>();
-            foreach(string FileName in SelectFile_ListBox.Items)
-            {
-                PartNameList.Add(FileName);
-            }
-            return PartNameList;
-        }
-
-        private void MakeZipFile()
-        {
-            
         }
 
         public string ExportDxf(string OriginalFilePath, string ExportFolderPath)
@@ -605,6 +616,7 @@ namespace ExportCadTool2
                 return e.ToString();
             }
         }
+        
         public string ExportPdf(string OriginalFilePath, string ExportFolderPath)
         {
             try
@@ -647,6 +659,7 @@ namespace ExportCadTool2
                 return e.ToString();
             }
         }
+        
         public string ExportStep(string OriginalFilePath, string ExportFolderPath)
         {
             try
@@ -692,6 +705,7 @@ namespace ExportCadTool2
             }
 
         }
+        
         public string ExportIges(string OriginalFilePath, string ExportFolderPath)
         {
             try
@@ -736,6 +750,7 @@ namespace ExportCadTool2
                 return e.ToString();
             }
         }
+        
         public string ExportStl(string OriginalFilePath, string ExportFolderPath)
         {
             try
@@ -779,6 +794,7 @@ namespace ExportCadTool2
                 return e.ToString();
             }
         }
+
 
         private void StartExport_Button_Click(object sender, EventArgs e)//変換開始処理
         {
@@ -841,8 +857,23 @@ namespace ExportCadTool2
                 {
                     ZipFolderPath = null;
                 }
+                string[] ExportExtentionPath = new string[6];
+                ExportExtentionPath[0] = ExportFolderPath;
+                //オプションで拡張子ごとのファイルに分ける場合は直下の拡張子ごとのフォルダに保存する
+                if (SeparateFolderByExtension_CheckBox.Checked == true)
+                {
+                    if (PDF_CheckBox.Checked == true) ExportExtentionPath[1] = ExportFolderPath + "\\" + "pdf";
+                    if (DXF_CheckBox.Checked == true) ExportExtentionPath[2] = ExportFolderPath + "\\" + "dxf";
+                    if (IGS_CheckBox.Checked == true) ExportExtentionPath[3] = ExportFolderPath + "\\" + "igs";
+                    if (STEP_CheckBox.Checked == true) ExportExtentionPath[4] = ExportFolderPath + "\\" + "step";
+                    if (STL_CheckBox.Checked == true) ExportExtentionPath[5] = ExportFolderPath + "\\" + "stl";
+                }
+                else
+                {
+                    for (int i = 0; i < ExportExtentionPath.Length; i++) ExportExtentionPath[i] = ExportFolderPath;
+                }
 
-                ExportCADFile(SelectFile_ListBox.Items, ExportFolderPath, ZipFolderPath);
+                ExportCADFile(SelectFile_ListBox.Items, ExportFolderPath, ZipFolderPath,ExportExtentionPath);
 
                 Task_ProgressBar.Value = 0;
                 Progress_Label.Text = "処理待ち";
@@ -894,7 +925,7 @@ namespace ExportCadTool2
             this.Close();
         }
 
-        private void AllGroupBoxONOFF(bool ONOFF)
+        private void AllGroupBoxONOFF(bool ONOFF)//全てのグローブボックスのONOFF
         {
             SelectExportFilePath_GroupBox.Enabled = ONOFF;
             FileSelect_GroupBox.Enabled = ONOFF;
@@ -902,9 +933,10 @@ namespace ExportCadTool2
             ModelExportExtension_GroupBox.Enabled=ONOFF;
             ExportOption_GroupBox.Enabled=ONOFF;
             StartExoport_GroupBox.Enabled=ONOFF;
+            Option_GroupBox.Enabled=ONOFF;
         }
 
-        private void OptionReset()
+        private void OptionReset() //オプションの選択をデフォルト状態にリセット
         {
             ExportFolderPath_ListBox.Items.Clear();
             ZipFolderPath_ListBox.Items.Clear();
@@ -920,13 +952,13 @@ namespace ExportCadTool2
             AddSuffix_CheckBox.Checked = false;
         }
 
-        private void FileSelectRest_Button_Click(object sender, EventArgs e)
+        private void FileSelectRest_Button_Click(object sender, EventArgs e) //ファイル選択をリセット
         {
             SelectFile_ListBox.Items.Clear();
             Toggle_GroupBox();
         }
 
-        private void GetUserLog()
+        private void GetUserLog()//使用したユーザー名と時刻をCSVファイルに保存
         {
             DataTable dataTable= new DataTable();
             dataTable.Columns.Add(System.Environment.UserName);
@@ -958,7 +990,7 @@ namespace ExportCadTool2
             }
         }
 
-        private void EndToast()
+        private void EndToast() //作業終了時にトースト通知を発行
         {
             new ToastContentBuilder()
                 .AddText("CADデータ出力ツール")
@@ -970,5 +1002,7 @@ namespace ExportCadTool2
         {
             OptionReset();
         }
+
+
     }
 }
