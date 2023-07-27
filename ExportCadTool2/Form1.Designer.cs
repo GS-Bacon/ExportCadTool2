@@ -470,7 +470,6 @@
             this.Task_ProgressBar.Name = "Task_ProgressBar";
             this.Task_ProgressBar.Size = new System.Drawing.Size(296, 23);
             this.Task_ProgressBar.TabIndex = 4;
-            this.Task_ProgressBar.Click += new System.EventHandler(this.Task_ProgressBar_Click);
             // 
             // Progress_Label
             // 
