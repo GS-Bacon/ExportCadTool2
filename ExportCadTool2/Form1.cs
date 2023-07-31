@@ -18,50 +18,36 @@ using SolidWorks.Interop.swconst;
 
 namespace ExportCadTool2
 {
-    public partial class CadDataExportTool : Form
+    public class CadDataExport
     {
-        SldWorks SolidworksApp = new SldWorks();
-        public CadDataExportTool()
+        public CADExportOpotion2 CadDataOption;
+        CadDataExport(CADExportOpotion2 cADExportOpotion2)
         {
-            InitializeComponent();
+            this.CadDataOption = cADExportOpotion2;
         }
+        SldWorks SolidworksApp = new SldWorks();
 
-        ExportOpotion2 exportOpotion2 = new ExportOpotion2();
-
-        private void ExportCADFile(ListBox.ObjectCollection OriginalFilePath, string ExportFolderPath, string ZipFolderPath, string[] ExportPath) //拡張子ごとにファイルを出力する ついでにZipファイルにも保存する
+        private void ExportCADFile() //拡張子ごとにファイルを出力する ついでにZipファイルにも保存する
         {
-            string ExportFilePath;
-            StringBuilder LabelText = new StringBuilder();
-
-            for (int i = 0; i < OriginalFilePath.Count; i++)
+            for (int i = 0; i < CadDataOption.filePath.Count; i++)
             {
-                string OriginalFile = (string)OriginalFilePath[i];
+                string OriginalFile = (string)CadDataOption.filePath[i];
 
                 string FileExtension = Path.GetExtension(OriginalFile);
                 switch (FileExtension)
                 {
                     case ".SLDDRW":
-                        if (PDF_CheckBox.Checked == true)
+                        if (CadDataOption.pdfOption.Checked == true)
                         {
                             //エクスポートして保存
-                            LabelText.Append("Export PDF : ");
-                            LabelText.Append(Path.GetFileName(OriginalFile));
-                            Progress_Label.Text = LabelText.ToString();
-                            Task_ProgressBar.Value++;
-                            Progress_Label.Update();
-                            LabelText.Clear();
 
                             Task.Run(() =>
                             {
-                                ExportFilePath = ExportPdf(OriginalFile, ExportPath[1]);
+                                CadDataOption.exportFilePath.Add(ExportPdf((string)CadDataOption.filePath[i],CadDataOption.pdfFolderPath);
 
                                 //Zipファイルオプションが選択されている場合はZipファイルに保存
-                                if (MakeZipFileByPartName_CheckBox.Checked == true)
+                                if (CadDataOption.zip.Checked == true)
                                 {
-                                    Progress_Label.Text = "Zipping : " + Path.GetFileName(OriginalFile);
-                                    Task_ProgressBar.Value++;
-                                    Progress_Label.Update();
-                                    LabelText.Clear();
                                     using (ZipArchive ZipCADFile = ZipFile.Open(ZipFolderPath + "\\" + Path.GetFileNameWithoutExtension(OriginalFile) + ".zip", ZipArchiveMode.Update))
                                     {
                                         ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(ExportFilePath), CompressionLevel.Optimal);
@@ -609,7 +595,7 @@ namespace ExportCadTool2
 
         private void OptionSetting()
         {
-            exportOpotion2.filePath = SelectFile_ListBox.Items;
+            //exportOpotion2.filePath = SelectFile_ListBox.Items;
         }
     }
 }

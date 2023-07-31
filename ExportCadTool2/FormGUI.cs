@@ -15,6 +15,8 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using SolidWorks.Interop.sldworks;
 using SolidWorks.Interop.swconst;
+using Windows.Security.Cryptography.Certificates;
+using ExportCadTool2;
 
 namespace ExportCadTool2
 {
@@ -453,5 +455,22 @@ namespace ExportCadTool2
             Toggle_GroupBox();
         }
 
+        private void InitializeComponent()
+        {
+            this.SuspendLayout();
+            // 
+            // CadDataExportTool
+            // 
+            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.Name = "CadDataExportTool";
+            this.Load += new System.EventHandler(this.CadDataExportTool_Load);
+            this.ResumeLayout(false);
+
+        }
+
+        private void CadDataExportTool_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
