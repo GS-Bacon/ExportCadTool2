@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -11,28 +12,14 @@ namespace ExportCadTool2
 {
     public class CADExportOpotion2
     {
-        public ListBox filePath { get; set; }//元ファイルパス
-        public CheckBox moveExportFolderOption { get; set; }
-        public ListBox exportFolderPath 
-        {
-            set 
-            {
-                exportFolderPath = value;
-            }
-            get
-            {
-                if (moveExportFolderOption.Checked == true)
-                {
-                    return filePath;
-                }
-                return exportFolderPath;
-            }
-        }//出力フォルダパス
-        public List<string> exportFilePath { get; set; }//個別ファイル出力パス
+        public ListBox filePath { get; set; }//出力前のデーターファイルリスト
+        public CheckBox moveExportFolderOption { get; set; }//別のフォルダに出力するオプション
+        public ListBox exportFolderPath { get; set; } //出力するフォルダのパス
+        public List<string> exportFilePath { get; set; } //個別ファイル出力パス
         public string zipFolderPath { get; set; }
         public string pdfFolderPath { get; set; }
         public string dxfFolderPath { get; set; }
-        public string igsFloderPaht { get; set; }
+        public string igsFloderPath { get; set; }
         public string stepFolderPath { get; set; }
         public string stlFolderPath { get; set; }
         public CheckBox makeExtetionFolderOption { get; set; }

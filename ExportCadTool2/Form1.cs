@@ -29,9 +29,9 @@ namespace ExportCadTool2
 
         private void ExportCADFile() //拡張子ごとにファイルを出力する ついでにZipファイルにも保存する
         {
-            for (int i = 0; i < CadDataOption.filePath.Count; i++)
+            for (int i = 0; i < CadDataOption.filePath.Items.Count; i++)
             {
-                string OriginalFile = (string)CadDataOption.filePath[i];
+                string OriginalFile = (string)CadDataOption.filePath.Items[i];
 
                 string FileExtension = Path.GetExtension(OriginalFile);
                 switch (FileExtension)
@@ -41,131 +41,42 @@ namespace ExportCadTool2
                         {
                             //エクスポートして保存
 
-                            Task.Run(() =>
-                            {
-                                CadDataOption.exportFilePath.Add(ExportPdf((string)CadDataOption.filePath[i],CadDataOption.pdfFolderPath);
+                            CadDataOption.exportFilePath.Add(ExportPdf(OriginalFile, CadDataOption.pdfFolderPath));
 
-                                //Zipファイルオプションが選択されている場合はZipファイルに保存
-                                if (CadDataOption.zip.Checked == true)
-                                {
-                                    using (ZipArchive ZipCADFile = ZipFile.Open(ZipFolderPath + "\\" + Path.GetFileNameWithoutExtension(OriginalFile) + ".zip", ZipArchiveMode.Update))
-                                    {
-                                        ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(ExportFilePath), CompressionLevel.Optimal);
-                                    }
-                                }
-                            });
                         }
-                        if (DXF_CheckBox.Checked == true)
+
+                        if (CadDataOption.dxfOption.Checked == true)
                         {
-                            Task.Run(() =>
-                            {
-                                LabelText.Append("Export DXF : ");
-                                LabelText.Append(Path.GetFileName(OriginalFile));
-                                Progress_Label.Text = LabelText.ToString();
-                                Task_ProgressBar.Value++;
-                                Progress_Label.Update();
-                                LabelText.Clear();
-
-                                ExportFilePath = ExportDxf(OriginalFile, ExportPath[2]);
-
-                                //Zipファイルオプションが選択されている場合はZipファイルに保存
-                                if (MakeZipFileByPartName_CheckBox.Checked == true)
-                                {
-                                    Progress_Label.Text = "Zipping: " + Path.GetFileName(OriginalFile);
-                                    Task_ProgressBar.Value++;
-                                    Progress_Label.Update();
-                                    LabelText.Clear();
-                                    using (ZipArchive ZipCADFile = ZipFile.Open(ZipFolderPath + "\\" + Path.GetFileNameWithoutExtension(OriginalFile) + ".zip", ZipArchiveMode.Update))
-                                    {
-                                        ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(ExportFilePath), CompressionLevel.Optimal);
-                                    }
-                                }
-                            });
+                            CadDataOption.exportFilePath.Add(ExportDxf(OriginalFile, CadDataOption.dxfFolderPath));
                         }
+
                         break;
+
                     case ".SLDPRT":
-                        if (IGS_CheckBox.Checked == true)
+                        if (CadDataOption.igsOption.Checked == true)
                         {
-                            Task.Run(() =>
-                            {
-                                LabelText.Append("Export IGS : ");
-                                LabelText.Append(Path.GetFileName(OriginalFile));
-                                Progress_Label.Text = LabelText.ToString();
-                                Task_ProgressBar.Value++;
-                                Progress_Label.Update();
-                                LabelText.Clear();
-
-                                ExportFilePath = ExportIges(OriginalFile, ExportPath[3]);
-
-                                //Zipファイルオプションが選択されている場合はZipファイルに保存
-                                if (MakeZipFileByPartName_CheckBox.Checked == true)
-                                {
-                                    Progress_Label.Text = "Zipping: " + Path.GetFileName(OriginalFile);
-                                    Task_ProgressBar.Value++;
-                                    Progress_Label.Update();
-                                    LabelText.Clear();
-                                    using (ZipArchive ZipCADFile = ZipFile.Open(ZipFolderPath + "\\" + Path.GetFileNameWithoutExtension(OriginalFile) + ".zip", ZipArchiveMode.Update))
-                                    {
-                                        ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(ExportFilePath), CompressionLevel.Optimal);
-                                    }
-                                }
-                            });
+                            CadDataOption.exportFilePath.Add(ExportIges(OriginalFile, CadDataOption.igsFloderPath));
                         }
-                        if (STEP_CheckBox.Checked == true)
-                        {
-                            Task.Run(() =>
-                            {
-                                LabelText.Append("Export STEP : ");
-                                LabelText.Append(Path.GetFileName(OriginalFile));
-                                Progress_Label.Text = LabelText.ToString();
-                                Task_ProgressBar.Value++;
-                                Progress_Label.Update();
-                                LabelText.Clear();
-                                ExportFilePath = ExportStep(OriginalFile, ExportPath[4]);
 
-                                //Zipファイルオプションが選択されている場合はZipファイルに保存
-                                if (MakeZipFileByPartName_CheckBox.Checked == true)
-                                {
-                                    Progress_Label.Text = "Zipping: " + Path.GetFileName(OriginalFile);
-                                    Task_ProgressBar.Value++;
-                                    Progress_Label.Update();
-                                    LabelText.Clear();
-                                    using (ZipArchive ZipCADFile = ZipFile.Open(ZipFolderPath + "\\" + Path.GetFileNameWithoutExtension(OriginalFile) + ".zip", ZipArchiveMode.Update))
-                                    {
-                                        ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(ExportFilePath), CompressionLevel.Optimal);
-                                    }
-                                }
-                            });
+                        if (CadDataOption.stepOption.Checked == true)
+                        {
+                            CadDataOption.exportFilePath.Add(ExportStep(OriginalFile, CadDataOption.stepFolderPath));
                         }
-                        if (STL_CheckBox.Checked == true)
+                        if (CadDataOption.stlOption.Checked == true)
                         {
-                            Task.Run(() =>
-                            {
-                                Progress_Label.Text = "Export STL : " + Path.GetFileName(OriginalFile);
-                                Task_ProgressBar.Value++;
-                                Progress_Label.Update();
-                                LabelText.Clear();
-                                ExportFilePath = ExportStl(OriginalFile, ExportPath[5]);
-
-                                //Zipファイルオプションが選択されている場合はZipファイルに保存
-                                if (MakeZipFileByPartName_CheckBox.Checked == true)
-                                {
-                                    Progress_Label.Text = "Zipping: " + Path.GetFileName(OriginalFile);
-                                    Task_ProgressBar.Value++;
-                                    Progress_Label.Update();
-                                    LabelText.Clear();
-                                    using (ZipArchive ZipCADFile = ZipFile.Open(ZipFolderPath + "\\" + Path.GetFileNameWithoutExtension(OriginalFile) + ".zip", ZipArchiveMode.Update))
-                                    {
-                                        ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(ExportFilePath), CompressionLevel.Optimal);
-                                    }
-                                }
-                            });
-
+                            CadDataOption.exportFilePath.Add(ExportStl(OriginalFile, CadDataOption.stlFolderPath));
                         }
                         break;
                 }
             }
         }
+        /*
+                                    using (ZipArchive ZipCADFile = ZipFile.Open(ZipFolderPath + "\\" + Path.GetFileNameWithoutExtension(OriginalFile) + ".zip", ZipArchiveMode.Update))
+                                {
+                                    ZipCADFile.CreateEntryFromFile(ExportFilePath, Path.GetFileName(ExportFilePath), CompressionLevel.Optimal);
+          */
+
+
 
         private void MakeExportExtensionFolder(String ExportFilePath) //オプションで選択した拡張子ごとのフォルダを作成する
         {
@@ -206,7 +117,7 @@ namespace ExportCadTool2
                 SolidworksDocument = (ModelDoc2)SolidworksApp.OpenDoc6(
                     OriginalFilePath,
                     (int)swDocumentTypes_e.swDocDRAWING,
-                    (int)swOpenDocOptions_e.swOpenDocOptions_Silent,
+                    (int)swOpenDocOptions_e.swOpenDocOptions_RapidDraft,
                     "",
                     ref FileErro,
                     ref FileWarning
@@ -249,7 +160,7 @@ namespace ExportCadTool2
                 SolidworksDocument = (ModelDoc2)SolidworksApp.OpenDoc6(
                     OriginalFilePath,
                     (int)swDocumentTypes_e.swDocDRAWING,
-                    (int)swOpenDocOptions_e.swOpenDocOptions_Silent,
+                    (int)swOpenDocOptions_e.swOpenDocOptions_RapidDraft,
                     "",
                     ref FileErro,
                     ref FileWarning
